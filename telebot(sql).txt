@@ -1,0 +1,39 @@
+import telebot
+import sqlite3
+
+
+bot = telebot.TeleBot('6324404412:AAE6meqtZe9jTwu9SZAs6dxAvQcwu7M2wX0')
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    conn=sqlite3.connect('futdatabase.sql')
+    cur = conn.cursor()
+
+    cur.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(50), password VARCHAR(50))')
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    bot.send_message(message.chat.id, 'Привет, сейчас тебя зарегистрируем! Введите ваше имя')
+    bot.register_next_step_handler(message, user_name)
+
+def user_name(message):
+    name = message.text.strip()
+    bot.send_message(message.chet.id, 'Введите пароль')
+    bot.register_next_step_handler(message, user_pass)
+
+def user_pass(message):
+        password = message.text.strip()
+
+        conn = sqlite3.connect('futdatabase.sql')
+        cur = conn.cursor()
+
+        cur.execute(f'insert into users (name,pass) VALUES ({name}, {password})')
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        bot.send_message(message.chet.id, 'Привет, сейчас тебя зарегистрируем! Введите пароль')
+        bot.register_next_step_handler(message, user_pass)
+
+bot.polling(none_stop=True)
