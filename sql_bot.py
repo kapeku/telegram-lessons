@@ -55,3 +55,5 @@ def callback(call):
     bot.send_message(call.message.chat.id, info)
 
 bot.polling(none_stop=True)
+
+йоу
